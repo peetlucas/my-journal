@@ -1,50 +1,132 @@
-# Welcome to your Expo app 👋
+# Personal Journaling App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+This project is a Personal Journaling App built with React Native (Expo) for the frontend and Node.js with Express for the backend. The backend uses PostgreSQL as the database (Neon database hosted). The backend runs on port 5000.
 
-## Get started
+## Table of Contents
 
-1. Install dependencies
+- [Features](#features)
+- [Prerequisites](#prerequisites)
+- [Setup and Run](#setup-and-run)
+  - [Backend Setup](#backend-setup)
+  - [Frontend Setup](#frontend-setup)
+- [Project Structure](#project-structure)
+- [License](#license)
 
-   ```bash
+## Features
+
+- User authentication (Sign Up, Login, Logout)
+- Create, Read, Update, Delete (CRUD) journal entries
+- Categorization of journal entries
+- Settings for user preferences
+- Summary view of journal entries
+- Secure storage using `expo-secure-store`
+
+## Prerequisites
+
+- Node.js (>= 14.x)
+- npm (>= 6.x)
+- Expo CLI (`npm install -g expo-cli`)
+- PostgreSQL database (Neon Database)
+
+## Setup and Run
+
+### Backend Setup
+
+1. **Clone the repository:**
+
+   ```sh
+   git clone <repository-url>
+   cd <repository-directory>
+   ```
+
+2. **Navigate to the backend directory:**
+
+   ```sh
+   cd backend
+   ```
+
+3. **Install dependencies:**
+
+   ```sh
    npm install
    ```
 
-2. Start the app
+4. **Configure the database:**
 
-   ```bash
-    npx expo start
+   - Create a `.env` file in the `backend` directory with the following content:
+     ```env
+     DATABASE_URL=postgres://<username>:<password>@<host>:<port>/<database>
+     JWT_SECRET=your_jwt_secret
+     ```
+
+5. **Run database migrations (if applicable):**
+
+   ```sh
+   npx prisma migrate dev
    ```
 
-In the output, you'll find options to open the app in a
+6. **Start the backend server:**
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+   ```sh
+   npm start
+   ```
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+   The backend server should now be running on [http://localhost:5000](http://localhost:5000).
 
-## Get a fresh project
+### Frontend Setup
 
-When you're ready, run:
+1. **Navigate to the frontend directory:**
 
-```bash
-npm run reset-project
+   ```sh
+   cd frontend
+   ```
+
+2. **Install dependencies:**
+
+   ```sh
+   npm install
+   ```
+
+3. **Create a `config.js` file in the `frontend` directory with the following content:**
+
+   ```javascript
+   export default {
+     API_URL: "http://localhost:5000",
+   };
+   ```
+
+4. **Start the Expo server:**
+
+   ```sh
+   expo start
+   ```
+
+   The Expo server should now be running. You can use an Android/iOS simulator or the Expo Go app on your physical device to run the app.
+
+## Project Structure
+
+```markdown
+personal-journaling-app/
+├── backend/
+│ ├── src/
+│ │ ├── controllers/
+│ │ ├── entities/
+│ │ ├── routes/
+│ │ ├── app.js
+│ │ └── server.js
+│ ├
+│ │  
+│ ├── .env
+│ ├── package.json
+│ └── README.md
+├── frontend/
+│ ├── assets/
+│ ├── components/
+│ ├── navigation/
+│ ├── screens/
+│ ├── App.tsx
+│ ├── config.js
+│ ├── package.json
+│ └── README.md
+└── README.md
 ```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
