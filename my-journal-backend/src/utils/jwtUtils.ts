@@ -1,1 +1,1 @@
-export const JWT_SECRET = 'your_jwt_secret_here';
+export const JWT_SECRET = 'e5e6b79ad93f632eae7bff6725e048ee6a9b341a7ba33266431a94aefcefe6355ad050243ac355eaca4de7295d626678543f573acc0f1bbaeddce37fc3300bc9';
