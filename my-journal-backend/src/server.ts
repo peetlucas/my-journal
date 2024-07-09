@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+
 import express, { Request, Response } from 'express';
 import { authMiddleware } from './middleware/authMiddleware';
 import { AuthService } from './services/AuthService';
