@@ -59,7 +59,7 @@ This project is a Personal Journaling App built with React Native (Expo) for the
      JWT_SECRET=your_jwt_secret
      ```
 
-5. **Run database migrations (if applicable):**
+5. **Run database migrations:**
 
    ```sh
    npx prisma migrate dev

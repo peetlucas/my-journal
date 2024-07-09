@@ -1,35 +1,24 @@
-import { AppDataSource } from '../data-source';
-import { JournalEntry } from '../entities/JournalEntry';
+import prisma from '../../prisma/prismaClient';
 
-export class JournalEntryService {
-  static async createEntry(userId: number, title: string, content: string, category: string, date: Date) {
-    const journalEntryRepository = AppDataSource.getRepository(JournalEntry);
-    const entry = journalEntryRepository.create({ userId, title, content, category, date });
-    await journalEntryRepository.save(entry);
-    return entry;
-  }
+export const JournalEntryService = {
+  async createEntry(userId: number, title: string, content: string, category: string, date: Date) {
+    return await prisma.journalEntry.create({
+      data: { title, content, category, date, userId }
+    });
+  },
 
-  static async getEntries(userId: number) {
-    const journalEntryRepository = AppDataSource.getRepository(JournalEntry);
-    return await journalEntryRepository.find({ where: { userId } });
-  }
+  async getEntries(userId: number) {
+    return await prisma.journalEntry.findMany({ where: { userId } });
+  },
 
-  static async updateEntry(id: number, title: string, content: string, category: string, date: Date) {
-    const journalEntryRepository = AppDataSource.getRepository(JournalEntry);
-    const entry = await journalEntryRepository.findOne({ where: { id } });
-    if (!entry) {
-      throw new Error('Journal entry not found');
-    }
-    entry.title = title;
-    entry.content = content;
-    entry.category = category;
-    entry.date = date;
-    await journalEntryRepository.save(entry);
-    return entry;
-  }
+  async updateEntry(id: number, title: string, content: string, category: string, date: Date) {
+    return await prisma.journalEntry.update({
+      where: { id },
+      data: { title, content, category, date }
+    });
+  },
 
-  static async deleteEntry(id: number) {
-    const journalEntryRepository = AppDataSource.getRepository(JournalEntry);
-    await journalEntryRepository.delete({ id });
+  async deleteEntry(id: number) {
+    await prisma.journalEntry.delete({ where: { id } });
   }
-}
+};

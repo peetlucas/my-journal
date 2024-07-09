@@ -1,30 +1,22 @@
-import bcrypt from 'bcrypt';
+import prisma from '../../prisma/prismaClient';
+import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { AppDataSource } from '../data-source';
-import { User } from '../entities/User';
 
-export class AuthService {
-  static async signUp(email: string, password: string, username: string) {
-    const userRepository = AppDataSource.getRepository(User);
+export const AuthService = {
+  async signUp(email: string, password: string, username: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = userRepository.create({ email, password: hashedPassword, username });
-    await userRepository.save(user);
+    const user = await prisma.user.create({
+      data: { email, password: hashedPassword, username }
+    });
     return user;
-  }
+  },
 
-  static async login(email: string, password: string) {
-    const userRepository = AppDataSource.getRepository(User);
-    const user = await userRepository.findOne({ where: { email } });
-    if (!user) {
-      throw new Error('User not found');
+  async login(email: string, password: string) {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new Error('Invalid email or password');
     }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new Error('Invalid password');
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, { expiresIn: '1h' });
     return { user, token };
   }
-}
+};

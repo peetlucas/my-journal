@@ -1,25 +1,15 @@
-import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-
-interface DecodedToken {
-  id: number;
-}
+import { Request, Response, NextFunction } from 'express';
 
 export const authMiddleware = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers['authorization'];
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
-  if (!token) {
-    return res.status(403).json({ message: 'No token provided' });
-  }
-
-  const jwtSecret = process.env.JWT_SECRET as string;
-
-  jwt.verify(token, jwtSecret, (err, decoded) => {
-    if (err) {
-      return res.status(500).json({ message: 'Failed to authenticate token' });
-    }
-
-    req.userId = (decoded as DecodedToken).id;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET!);
+    req.userId = (decoded as any).userId;
     next();
-  });
+  } catch (err) {
+    res.status(401).json({ message: 'Unauthorized' });
+  }
 };

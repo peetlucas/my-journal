@@ -1,27 +1,45 @@
-import { AppDataSource } from '../data-source';
-import { JournalEntry } from '../entities/JournalEntry';
-import { MoreThanOrEqual } from 'typeorm';
+import prisma from '../../prisma/prismaClient';
 
-export class SummaryService {
-  static async getSummary(userId: number, period: 'daily' | 'weekly' | 'monthly') {
-    let date = new Date();
-    if (period === 'daily') {
-      date.setDate(date.getDate() - 1);
-    } else if (period === 'weekly') {
-      date.setDate(date.getDate() - 7);
-    } else if (period === 'monthly') {
-      date.setMonth(date.getMonth() - 1);
+export const SummaryService = {
+  async getSummary(userId: number, period: 'daily' | 'weekly' | 'monthly') {
+    const today = new Date();
+    let startDate: Date;
+
+    switch (period) {
+      case 'daily':
+        startDate = new Date(today.setHours(0, 0, 0, 0));
+        break;
+      case 'weekly':
+        const startOfWeek = today.getDate() - today.getDay() + 1;
+        startDate = new Date(today.setDate(startOfWeek));
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case 'monthly':
+        startDate = new Date(today.getFullYear(), today.getMonth(), 1);
+        break;
+      default:
+        throw new Error('Invalid period');
     }
 
-    const journalEntryRepository = AppDataSource.getRepository(JournalEntry);
-    
-    const entries = await journalEntryRepository.find({
+    const entries = await prisma.journalEntry.findMany({
       where: {
         userId,
-        date: MoreThanOrEqual(date)
+        date: {
+          gte: startDate
+        }
+      },
+      orderBy: {
+        date: 'asc'
       }
     });
 
-    return entries;
+    const summary = {
+      period,
+      startDate,
+      entries,
+      count: entries.length,
+    };
+
+    return summary;
   }
-}
+};
