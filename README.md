@@ -63,6 +63,9 @@ This project is a Personal Journaling App built with React Native (Expo) for the
 
    ```sh
    npx prisma migrate dev
+   npx prisma generate
+
+   run npx ts-node prisma/seed.ts to generate random test data
    ```
 
 6. **Start the backend server:**
